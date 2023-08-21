@@ -1,0 +1,18 @@
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: workdir
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: sh
+        working-directory: test
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "in test"
