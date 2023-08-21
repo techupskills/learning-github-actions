@@ -1,0 +1,23 @@
+on:
+  push:
+  
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    
+    outputs:
+      build-stage: ${{ steps.set-debug-stage.outputs.BUILD_STAGE }}
+    
+    steps:
+      - name: Set debug 
+        id: set-debug-stage
+        run: echo "BUILD_STAGE=debug" >> $GITHUB_OUTPUT
+        
+  report:      
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Get stage
+        env:
+          BUILD_STAGE: ${{ needs.setup.outputs.build-stage }}
+        run: echo "The build stage is $BUILD_STAGE"
