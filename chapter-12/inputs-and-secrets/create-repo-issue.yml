@@ -1,0 +1,36 @@
+name: create-repo-issue
+  
+on: 
+  workflow_call:
+    secrets:
+      token:
+        required: true
+    inputs:
+      title:
+        description: 'Issue title'
+        required: true
+        type: string
+      body:
+        description: 'Issue body'
+        required: true
+        type: string
+        
+jobs:
+ 
+  create_issue:
+    runs-on: ubuntu-latest 
+  
+    permissions:
+      issues: write 
+    steps:
+      - name: Create issue using REST API
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/issues \
+          --header 'authorization: Bearer ${{ secrets.token }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "title": "${{ inputs.title }}",
+            "body": "${{ inputs.body }}"
+            }' \
+          --fail 
