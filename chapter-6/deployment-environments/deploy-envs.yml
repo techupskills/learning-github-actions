@@ -1,0 +1,81 @@
+name: Deployments example
+on:
+  push:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    
+    - uses: gradle/gradle-build-action@v2
+      with:
+        arguments: build
+    - uses: gradle/gradle-build-action@v2
+      with:
+        arguments: test
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: archive.zip
+        path: build/libs
+           
+        
+  deploy-dev:
+  
+    needs: [build-and-test]
+    if: github.ref == 'refs/heads/dev'
+      
+    runs-on: ubuntu-latest
+    environment: 
+      name: dev
+      url: https://github.com/${{ github.repository }}/releases/tag/v${{ vars.DEV_VERSION }}    
+    
+    steps:
+      - name: Download candidate artifacts
+        uses: actions/download-artifact@v3       
+        with:
+          name: archive.zip 
+    
+      - name: release to dev
+        uses: softprops/action-gh-release@v0.1.15
+        with: 
+          tag_name: v${{ vars.DEV_VERSION }}
+          token: ${{ secrets.DEV_TOKEN }}
+          prerelease: true
+          draft: true
+          name: dev
+          files: greetings-deploy.jar           
+            
+  deploy-prod:
+  
+    needs: [build-and-test]
+    if: github.ref == 'refs/heads/main' 
+    
+    runs-on: ubuntu-latest
+    environment: 
+      name: production
+      url: https://github.com/${{ github.repository }}/releases/tag/v${{ vars.PROD_VERSION }}
+      
+    steps:      
+      - name: Download candidate artifacts
+        uses: actions/download-artifact@v3       
+        with:
+          name: archive.zip    
+        
+      - name: GH Release
+        uses: softprops/action-gh-release@v0.1.15
+        with: 
+          tag_name: v${{ vars.PROD_VERSION }}
+          token: ${{ secrets.PROD_TOKEN }}
+          generate_release_notes: true
+          name: Production
+          files: greetings-deploy.jar 
