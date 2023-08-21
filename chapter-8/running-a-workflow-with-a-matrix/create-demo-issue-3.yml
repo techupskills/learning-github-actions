@@ -1,0 +1,22 @@
+name: Create demo issue 3
+
+on:
+  push:
+  
+jobs: 
+  create-new-issue:
+    strategy:
+      matrix:
+        prod: [prod1, prod2]
+        level: [dev, stage, prod]          
+    uses: rndrepos/common/.github/workflows/create-issue.yml@v1
+    secrets: inherit
+    with:
+      title: "${{ matrix.prod}} issue"
+      body: "Update for ${{ matrix.level }}"
+
+  report-issue-number:
+    runs-on: ubuntu-latest
+    needs: create-new-issue
+    steps:
+      - run: echo ${{ needs.create-new-issue.outputs.issue-num }}
