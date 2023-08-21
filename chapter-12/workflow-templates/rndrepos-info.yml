@@ -1,0 +1,27 @@
+name: Repo Info with context
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  info:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+            
+      - uses: actions/checkout@v3
+          
+      - name: Show repo info
+        env: 
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo Repository is ${{ github.repository }}
+          echo Size of local repository area is `du -hs ${{ github.workspace }}`
+          echo Context dump follows:
+          echo "$GITHUB_CONTEXT"
+                
+   # add your jobs here  
