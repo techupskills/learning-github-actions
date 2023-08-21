@@ -1,0 +1,44 @@
+name: create issue via gh
+  
+on: 
+  workflow_call:
+    inputs:
+      title:
+        description: 'Issue title'
+        required: true
+        type: string
+      body:
+        description: 'Issue body'
+        required: true
+        type: string
+    outputs:
+      issue-number:
+        description: "The issue number"
+        value: ${{ jobs.create-issue.outputs.inum }}
+        
+jobs:
+ 
+  create-issue:
+    runs-on: ubuntu-latest
+    # Map job outputs to step outputs
+    outputs:
+      inum: ${{ steps.new-issue.outputs.inum }}
+  
+    permissions:
+      issues: write 
+      
+    steps:
+      - name: Create issue using CLI
+        id: new-issue
+        run: |
+          response=`gh issue create \
+          --title "${{ inputs.title }}" \
+          --body "${{ inputs.body }}" \
+          --repo ${{ github.event.repository.url }}`
+          echo "inum=$response | rev | cut -d'/' -f 1" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+        
+   
+  
