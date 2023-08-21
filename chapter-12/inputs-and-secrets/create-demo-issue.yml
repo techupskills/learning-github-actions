@@ -1,0 +1,19 @@
+name: Create demo issue
+
+on:
+  push:
+  
+jobs:
+
+  msg:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Simple demo for reusable workflow"
+    
+  info:
+    uses: rndrepos/common/.github/workflows/create-repo-issue.yml@main
+    secrets:
+      token: ${{ secrets.PAT }} 
+    with:
+      title: "Test issue"
+      body: "Test body"
