@@ -1,0 +1,27 @@
+name: create issues from context
+  
+on: 
+  repository_dispatch:
+    types:
+      - level_updated
+        
+jobs:
+ 
+  create-issues:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        level: ${{ github.event.client_payload.levels }}
+   
+    permissions:
+      issues: write 
+      
+    steps:
+      - name: Create issues
+        run: |
+          gh issue create \
+          --title "Issue for ${{ matrix.level }}" \
+          --body "${{ matrix.level }} updated" \
+          --repo ${{ github.repository }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
