@@ -1,0 +1,14 @@
+name: Get Info
+
+on:
+  push:
+  
+jobs:
+
+  notice:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::debug::Calling repo-info reusable workflow"
+  info:
+    uses: rndrepos/common/.github/workflows/repo-info.yml@main
+      
