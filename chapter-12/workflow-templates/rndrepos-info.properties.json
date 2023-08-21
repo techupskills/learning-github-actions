@@ -1,0 +1,11 @@
+{
+    "name": "RndRepos Info Workflow",
+    "description": "RndRepos informational starter workflow.",
+    "iconName": "check-square",
+    "categories": [
+        "Text"
+    ],
+    "filePatterns": [
+       ".*\\.md$"
+    ]
+}
