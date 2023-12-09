@@ -1,4 +1,4 @@
-# Workflow to demo installing a package and executing on a self-hosted runner
+
 name: file tree
  
 on:
