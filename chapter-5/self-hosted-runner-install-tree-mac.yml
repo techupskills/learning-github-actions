@@ -1,5 +1,5 @@
-# Workflow to demo installing a package and executing on a self-hosted runner
-name: file tree
+
+name: file tree 1
  
 on:
   workflow_dispatch:
