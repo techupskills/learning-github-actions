@@ -1,0 +1,25 @@
+name: Deployments example
+on:
+  push:
+    branches: [ "main", "dev" ]
+jobs:
+  build-and-test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up JDK 11
+          uses: actions/setup-java@v3
+          with:
+             java-version: '11'
+             distribution: 'temurin' 
+        - uses: gradle/gradle-build-action@v2
+          with:
+              arguments: build
+        - uses: gradle/gradle-build-action@v2
+          with:
+              arguments: test
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v3
+          with:
+              name: archive.zip
+              path: build/libs 
